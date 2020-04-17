@@ -18,7 +18,7 @@ namespace GemBoxMergeFieldIssues
 
             ComponentInfo.SetLicense("FREE-LIMITED-KEY");
 
-            var word = DocumentModel.Load(Path.Combine(currentPath, "doc.docx"), LoadOptions.DocxDefault);
+            var word = DocumentModel.Load(Path.Combine(currentPath, "doc2.docx"), LoadOptions.DocxDefault);
 
             var model = new MergeModel();
             Merge(word, model);
@@ -29,14 +29,6 @@ namespace GemBoxMergeFieldIssues
         private static void Merge(DocumentModel word, MergeModel model)
         {
             var fields = word.MailMerge.GetMergeFieldNames();
-
-            word.MailMerge.ClearOptions = MailMergeClearOptions.RemoveEmptyRanges;
-            word.MailMerge.ClearOptions = MailMergeClearOptions.RemoveEmptyParagraphs;
-
-            if (fields.Any(x => x.Contains("Details")))
-                word.MailMerge.Execute(model.Details, "Details");
-
-            word.MailMerge.ClearOptions = MailMergeClearOptions.None;
 
             word.MailMerge.Execute(model);
         }
