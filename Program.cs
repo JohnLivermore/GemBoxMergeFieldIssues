@@ -18,7 +18,7 @@ namespace GemBoxMergeFieldIssues
 
             ComponentInfo.SetLicense("FREE-LIMITED-KEY");
 
-            var word = DocumentModel.Load(Path.Combine(currentPath, "doc2.docx"), LoadOptions.DocxDefault);
+            var word = DocumentModel.Load(Path.Combine(currentPath, "doc.docx"), LoadOptions.DocxDefault);
 
             var model = new MergeModel();
             Merge(word, model);
