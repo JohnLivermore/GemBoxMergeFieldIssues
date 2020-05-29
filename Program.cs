@@ -20,7 +20,11 @@ namespace GemBoxMergeFieldIssues
 
             var word = DocumentModel.Load(Path.Combine(currentPath, "doc.docx"), LoadOptions.DocxDefault);
 
-            var model = new MergeModel();
+            var model = new MergeModel()
+            {
+                BaseObject = BuildDataSource()
+            };
+
             Merge(word, model);
 
             word.Save(Path.Combine(currentPath, "output.html"), SaveOptions.HtmlDefault);
@@ -28,33 +32,62 @@ namespace GemBoxMergeFieldIssues
 
         private static void Merge(DocumentModel word, MergeModel model)
         {
-            var fields = word.MailMerge.GetMergeFieldNames();
+            word.MailMerge.FieldMerging += (sender, e) =>
+            {
+            };
 
             word.MailMerge.Execute(model);
+        }
+
+        private static BaseObject BuildDataSource()
+        {
+            var bo = new BaseObject();
+
+            var co = new ChildObject() { Name = "Child1" };
+            co.Keys.Add("Color", "Red");
+            co.Keys.Add("Shape", "Circle");
+            co.Keys.Add("Size", "Small");
+            bo.Children.Add(co);
+
+            co = new ChildObject() { Name = "Child2" };
+            co.Keys.Add("Color", "Green");
+            co.Keys.Add("Shape", "Square");
+            co.Keys.Add("Size", "Small");
+            bo.Children.Add(co);
+
+            co = new ChildObject() { Name = "Child3" };
+            co.Keys.Add("Color", "Blue");
+            co.Keys.Add("Shape", "Circle");
+            co.Keys.Add("Size", "Large");
+            bo.Children.Add(co);
+
+            return bo;
         }
     }
 
     public class MergeModel
     {
-        public MergeModel()
+        public BaseObject BaseObject { get; set; }
+    }
+
+    public class BaseObject
+    {
+        public BaseObject()
         {
-            Details = new List<Detail>() {
-                    new Detail("AAA1", "AAA2"),
-                    new Detail("BBB1", "BBB2"),
-                    new Detail("CCC1", "CCC2")
-                };
+            Children = new List<ChildObject>();
         }
 
-        public string Link { get { return $"https://www.google.com"; } }
-
-        public List<Detail> Details { get; set; }
+        public List<ChildObject> Children { get; set; }
     }
 
-    public class Detail
+    public class ChildObject
     {
-        public Detail(string cell1, string cell2) { }
-        public string Cell1 { get; set; }
-        public string Cell2 { get; set; }
-    }
+        public ChildObject()
+        {
+            Keys = new Dictionary<string, string>();
+        }
 
+        public string Name { get; set; }
+        public Dictionary<string, string> Keys { get; set; }
+    }
 }
